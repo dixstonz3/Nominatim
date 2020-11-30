@@ -430,7 +430,23 @@ class PlaceLookup
                     $this->aLangPrefOrderSql
                 );
                 $aPlace['langaddress'] = $aPlace['address']->getLocaleAddress();
-            }
+				$aPlace['langaddress_without_postal'] = $aPlace['address']->getLocaleAddress(
+					array('filter' => function ($addressLine) { return $addressLine['type'] !== 'postcode'; })
+				);
+			} else {
+				/**
+				 * @TODO we should add the support of selecting address name without postal code to get_address_by_language
+				 */
+				$address = new AddressDetails(
+					$this->oDB,
+					$aPlace['place_id'],
+					$aPlace['housenumber'],
+					$this->aLangPrefOrderSql
+				);
+				$aPlace['langaddress_without_postal'] = $address->getLocaleAddress(
+					array('filter' => function ($addressLine) { return $addressLine['type'] !== 'postcode'; })
+				);
+			}
 
             if ($this->bExtraTags) {
                 if ($aPlace['extra']) {

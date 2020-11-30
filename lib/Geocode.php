@@ -913,6 +913,7 @@ class Geocode
                 $aResult['label'] = $sLabel;
             }
             $aResult['name'] = $aResult['langaddress'];
+			$aResult['name_without_postal'] = $aResult['langaddress_without_postal'];
 
             if ($oCtx->hasNearPoint()) {
                 $aResult['importance'] = 0.001;
@@ -967,11 +968,16 @@ class Geocode
                 if (isset($aResult['zoom'])) $iZoom = $aResult['zoom'];
                 $bFirst = false;
             }
+			if ($aResult['class'] === 'highway') {
+				$duplicateKey = $aResult['osm_type'].$aResult['class'].$aResult['name_without_postal'].$aResult['admin_level'];
+			} else {
+				$duplicateKey = $aResult['osm_type'].$aResult['class'].$aResult['type'].$aResult['name'].$aResult['admin_level'];
+			}
             if (!$this->oPlaceLookup->doDeDupe() || (!isset($aOSMIDDone[$aResult['osm_type'].$aResult['osm_id']])
-                && !isset($aClassTypeNameDone[$aResult['osm_type'].$aResult['class'].$aResult['type'].$aResult['name'].$aResult['admin_level']]))
+                && !isset($aClassTypeNameDone[$duplicateKey]))
             ) {
                 $aOSMIDDone[$aResult['osm_type'].$aResult['osm_id']] = true;
-                $aClassTypeNameDone[$aResult['osm_type'].$aResult['class'].$aResult['type'].$aResult['name'].$aResult['admin_level']] = true;
+                $aClassTypeNameDone[$duplicateKey] = true;
                 $aSearchResults[] = $aResult;
             }
 

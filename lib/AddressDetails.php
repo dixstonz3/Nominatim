@@ -46,12 +46,19 @@ class AddressDetails
         return array_filter($this->aAddressLines, array(__CLASS__, 'isAddress'));
     }
 
-    public function getLocaleAddress()
+    public function getLocaleAddress(array $options = [])
     {
         $aParts = array();
         $sPrevResult = '';
 
-        foreach ($this->aAddressLines as $aLine) {
+		if (isset($options['filter']) && is_callable($options['filter'])) {
+			$aAddressLines = array_filter($this->aAddressLines, $options['filter']);
+		}
+		else {
+			$aAddressLines = $this->aAddressLines;
+		}
+
+        foreach ($aAddressLines as $aLine) {
             if ($aLine['isaddress'] && $sPrevResult != $aLine['localname']) {
                 $sPrevResult = $aLine['localname'];
                 $aParts[] = $sPrevResult;
