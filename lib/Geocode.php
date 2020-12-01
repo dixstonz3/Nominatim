@@ -969,7 +969,7 @@ class Geocode
                 $bFirst = false;
             }
 			if ($aResult['class'] === 'highway') {
-				$duplicateKey = $aResult['osm_type'].$aResult['class'].$aResult['name_without_postal'].$aResult['admin_level'];
+				$duplicateKey = $aResult['name_without_postal'];
 			} else {
 				$duplicateKey = $aResult['osm_type'].$aResult['class'].$aResult['type'].$aResult['name'].$aResult['admin_level'];
 			}
